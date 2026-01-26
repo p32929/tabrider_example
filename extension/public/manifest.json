@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Tabrider Test",
+  "version": "1.0.0",
+  "description": "Test extension for tabrider",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "tabs",
+    "scripting",
+    "downloads"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "action": {
+    "default_popup": "index.html"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  }
+}

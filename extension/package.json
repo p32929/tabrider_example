@@ -1,0 +1,20 @@
+{
+  "name": "tabrider-test-extension",
+  "version": "1.0.0",
+  "description": "Test extension for tabrider",
+  "type": "module",
+  "scripts": {
+    "dev": "vite build --watch",
+    "build": "tsc --noEmit && vite build && npm run copy-public",
+    "build:fast": "vite build && npm run copy-public",
+    "copy-public": "cp -r public/* dist/"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.251",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.0"
+  },
+  "dependencies": {
+    "tabrider": "file:../.."
+  }
+}

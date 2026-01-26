@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>All In One Tests</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+      min-height: 200vh; /* For scroll test */
+    }
+
+    .container {
+      max-width: 600px;
+    }
+
+    h1 {
+      color: #1a1a2e;
+      margin-bottom: 8px;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      color: #6b7280;
+      margin-bottom: 24px;
+      font-size: 14px;
+    }
+
+    .test-section {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .section-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+    }
+
+    .buttons-container {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 12px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      color: white;
+      transition: all 0.3s ease;
+    }
+
+    .btn-red {
+      background: #ef4444;
+    }
+
+    .btn-green {
+      background: #22c55e;
+    }
+
+    /* Hover test styles */
+    .hover-box {
+      width: 120px;
+      height: 60px;
+      background: #ef4444;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .hover-box.hovered {
+      background: #22c55e;
+    }
+
+    /* Drag and drop styles */
+    .drag-container {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .draggable {
+      width: 80px;
+      height: 80px;
+      background: #3b82f6;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 12px;
+      cursor: grab;
+    }
+
+    .draggable.dragging {
+      opacity: 0.5;
+    }
+
+    .drop-zone {
+      width: 120px;
+      height: 120px;
+      border: 3px dashed #d1d5db;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #9ca3af;
+      font-size: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .drop-zone.dropped {
+      border-color: #22c55e;
+      background: #dcfce7;
+      color: #22c55e;
+      font-weight: 600;
+    }
+
+    /* Scroll test styles */
+    .scroll-target {
+      margin-top: 100vh;
+      padding: 20px;
+      background: #ef4444;
+      border-radius: 8px;
+      color: white;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    .scroll-target.scrolled {
+      background: #22c55e;
+    }
+
+    /* Result section */
+    .result-section {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    #result {
+      padding: 16px;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .result-pending {
+      background: #f3f4f6;
+      color: #6b7280;
+    }
+
+    .result-success {
+      background: #dcfce7;
+      color: #22c55e;
+    }
+
+    .result-partial {
+      background: #fef3c7;
+      color: #d97706;
+    }
+
+    .status-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .status-item {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      background: #f3f4f6;
+      color: #6b7280;
+    }
+
+    .status-item.done {
+      background: #dcfce7;
+      color: #22c55e;
+    }
+
+    /* Element state test styles */
+    .state-label {
+      padding: 8px 16px;
+      background: #e5e7eb;
+      border-radius: 6px;
+      font-size: 13px;
+      color: #374151;
+      display: inline-block;
+    }
+
+    .btn-small {
+      padding: 8px 16px;
+      font-size: 12px;
+    }
+
+    .btn-blue {
+      background: #3b82f6;
+    }
+
+    .btn-gray {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #374151;
+      cursor: pointer;
+    }
+
+    .checkbox-label input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    /* Form input test styles */
+    .form-label {
+      display: block;
+      font-size: 12px;
+      color: #6b7280;
+      margin-bottom: 6px;
+    }
+
+    .form-input {
+      padding: 10px 14px;
+      font-size: 14px;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      width: 250px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-input:focus {
+      border-color: #3b82f6;
+    }
+
+    .form-select {
+      padding: 10px 14px;
+      font-size: 14px;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      width: 250px;
+      outline: none;
+      background: white;
+      cursor: pointer;
+    }
+
+    .form-select:focus {
+      border-color: #3b82f6;
+    }
+
+    .file-input {
+      font-size: 13px;
+    }
+
+    .file-name {
+      margin-left: 10px;
+      font-size: 12px;
+      color: #22c55e;
+      font-weight: 600;
+    }
+
+    .file-preview {
+      margin-top: 10px;
+    }
+
+    .file-preview img {
+      max-width: 150px;
+      max-height: 100px;
+      border-radius: 8px;
+      border: 2px solid #e5e7eb;
+    }
+
+    .file-preview .file-confirm {
+      padding: 8px 12px;
+      background: #dcfce7;
+      color: #22c55e;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    .press-result, .focus-status {
+      margin-left: 10px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .press-result.success, .focus-status.success {
+      color: #22c55e;
+    }
+
+    .test-link {
+      color: #3b82f6;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    #list-element {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      gap: 10px;
+    }
+
+    #list-element .list-item {
+      padding: 6px 12px;
+      background: #e5e7eb;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>All In One Tests</h1>
+    <p class="subtitle">Tabrider Test Suite</p>
+
+    <!-- Click Tests -->
+    <div class="test-section">
+      <div class="section-title">Click Operations</div>
+      <div class="buttons-container">
+        <button id="click-btn" class="btn-red">click</button>
+        <button id="dblclick-btn" class="btn-red">double click</button>
+        <button id="rightclick-btn" class="btn-red">right click</button>
+      </div>
+    </div>
+
+    <!-- Mouse Action Tests -->
+    <div class="test-section">
+      <div class="section-title">Mouse Actions</div>
+
+      <div style="margin-bottom: 16px;">
+        <div style="font-size: 12px; color: #6b7280; margin-bottom: 8px;">Hover Test:</div>
+        <div id="hover-box" class="hover-box">hover me</div>
+      </div>
+
+      <div>
+        <div style="font-size: 12px; color: #6b7280; margin-bottom: 8px;">Drag & Drop Test:</div>
+        <div class="drag-container">
+          <div id="draggable" class="draggable" draggable="true">Drag me</div>
+          <div id="drop-zone" class="drop-zone">Drop here</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Element State Tests -->
+    <div class="test-section">
+      <div class="section-title">Element State</div>
+
+      <div class="state-tests">
+        <div style="margin-bottom: 12px;">
+          <span id="exists-element" class="state-label">I exist</span>
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <span id="visible-element" class="state-label">I'm visible</span>
+          <span id="hidden-element" class="state-label" style="display: none;">I'm hidden</span>
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <button id="enabled-btn" class="btn-small btn-blue">Enabled</button>
+          <button id="disabled-btn" class="btn-small btn-gray" disabled>Disabled</button>
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <label class="checkbox-label">
+            <input type="checkbox" id="test-checkbox">
+            <span>Check me</span>
+          </label>
+        </div>
+
+        <div>
+          <span id="waitfor-element" class="state-label">Wait for me</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Element Data Tests -->
+    <div class="test-section">
+      <div class="section-title">Element Data</div>
+
+      <div class="data-tests">
+        <div style="margin-bottom: 12px;">
+          <span id="text-element" class="state-label">This is sample text</span>
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <div id="html-element" class="state-label"><strong>Bold</strong> and <em>italic</em></div>
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <a id="link-element" href="https://example.com" data-testid="test-link" class="test-link">Example Link</a>
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <ul id="list-element">
+            <li class="list-item">Item 1</li>
+            <li class="list-item">Item 2</li>
+            <li class="list-item">Item 3</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Keyboard & Focus Tests -->
+    <div class="test-section">
+      <div class="section-title">Keyboard & Focus</div>
+
+      <div class="form-tests">
+        <div style="margin-bottom: 12px;">
+          <label class="form-label">Press Enter here:</label>
+          <input type="text" id="press-input" class="form-input" placeholder="Press Enter...">
+          <span id="press-result" class="press-result"></span>
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <label class="form-label">Focus/Blur test (input):</label>
+          <input type="text" id="focus-input" class="form-input" placeholder="Focus me...">
+          <span id="focus-status" class="focus-status"></span>
+        </div>
+
+        <div>
+          <label class="form-label">Focus test (button):</label>
+          <button id="focus-btn" class="btn-blue btn-small">Focus this button</button>
+          <span id="focus-btn-status" class="focus-status"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Input Tests -->
+    <div class="test-section">
+      <div class="section-title">Form Input</div>
+
+      <div class="form-tests">
+        <div style="margin-bottom: 12px;">
+          <label class="form-label">Text Input (fill/type/clear/getValue):</label>
+          <input type="text" id="text-input" class="form-input" placeholder="Type here...">
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <label class="form-label">Select Dropdown:</label>
+          <select id="test-select" class="form-select">
+            <option value="">Select an option</option>
+            <option value="opt1">Option 1</option>
+            <option value="opt2">Option 2</option>
+            <option value="opt3">Option 3</option>
+          </select>
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <label class="checkbox-label">
+            <input type="checkbox" id="uncheck-checkbox" checked>
+            <span>Uncheck me</span>
+          </label>
+        </div>
+
+        <div>
+          <label class="form-label">File Upload:</label>
+          <input type="file" id="file-input" class="file-input">
+          <span id="file-name" class="file-name"></span>
+          <div id="file-preview" class="file-preview"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Download Tests -->
+    <div class="test-section">
+      <div class="section-title">Download</div>
+
+      <div class="download-tests">
+        <div style="margin-bottom: 12px;">
+          <button id="download-btn" class="btn-blue" data-url="https://httpbin.org/image/jpeg">
+            Click to Download Image
+          </button>
+        </div>
+        <div id="download-info" style="margin-top: 12px; font-size: 11px; color: #374151; background: #f9fafb; padding: 12px; border-radius: 8px; font-family: monospace;">
+          <div id="download-log" style="line-height: 1.8;"></div>
+        </div>
+        <div id="download-preview" class="file-preview" style="margin-top: 12px;">
+          <div id="download-path" style="font-size: 11px; color: #6b7280; word-break: break-all;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screenshot Tests -->
+    <div class="test-section">
+      <div class="section-title">Screenshot</div>
+
+      <div class="screenshot-tests">
+        <div style="margin-bottom: 12px;">
+          <span class="state-label">Screenshot will be captured and displayed below</span>
+        </div>
+        <div id="screenshot-preview" style="margin-top: 12px;">
+          <img id="screenshot-image" style="display: none; max-width: 300px; border-radius: 8px; border: 2px solid #e5e7eb; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+          <div id="screenshot-info" style="font-size: 11px; color: #6b7280; margin-top: 6px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Result Section -->
+    <div class="result-section">
+      <div id="result" class="result-pending">
+        Waiting for tests to run...
+      </div>
+      <div class="status-grid">
+        <div id="status-click" class="status-item">Click</div>
+        <div id="status-dblclick" class="status-item">Double Click</div>
+        <div id="status-rightclick" class="status-item">Right Click</div>
+        <div id="status-hover" class="status-item">Hover</div>
+        <div id="status-drag" class="status-item">Drag & Drop</div>
+        <div id="status-scroll" class="status-item">Scroll</div>
+        <div id="status-exists" class="status-item">Exists</div>
+        <div id="status-visible" class="status-item">Visible</div>
+        <div id="status-enabled" class="status-item">Enabled</div>
+        <div id="status-checked" class="status-item">Checked</div>
+        <div id="status-waitfor" class="status-item">WaitFor</div>
+        <div id="status-fill" class="status-item">Fill</div>
+        <div id="status-type" class="status-item">Type</div>
+        <div id="status-clear" class="status-item">Clear</div>
+        <div id="status-getvalue" class="status-item">GetValue</div>
+        <div id="status-select" class="status-item">Select</div>
+        <div id="status-uncheck" class="status-item">Uncheck</div>
+        <div id="status-upload" class="status-item">Upload</div>
+        <div id="status-eval-string" class="status-item">eval:string</div>
+        <div id="status-eval-number" class="status-item">eval:number</div>
+        <div id="status-eval-boolean" class="status-item">eval:boolean</div>
+        <div id="status-eval-null" class="status-item">eval:null</div>
+        <div id="status-eval-undefined" class="status-item">eval:undef</div>
+        <div id="status-eval-object" class="status-item">eval:object</div>
+        <div id="status-eval-array" class="status-item">eval:array</div>
+        <div id="status-eval-nested" class="status-item">eval:nested</div>
+        <div id="status-eval-args" class="status-item">eval:args</div>
+        <div id="status-eval-mixed" class="status-item">eval:mixed</div>
+        <div id="status-eval-window" class="status-item">eval:window</div>
+        <div id="status-eval-document" class="status-item">eval:document</div>
+        <div id="status-eval-dom" class="status-item">eval:dom</div>
+        <div id="status-eval-compute" class="status-item">eval:compute</div>
+        <div id="status-geturl" class="status-item">getUrl</div>
+        <div id="status-gettitle" class="status-item">getTitle</div>
+        <div id="status-press" class="status-item">Press</div>
+        <div id="status-focus" class="status-item">Focus</div>
+        <div id="status-blur" class="status-item">Blur</div>
+        <div id="status-focus-btn" class="status-item">Focus:btn</div>
+        <div id="status-gettext" class="status-item">getText</div>
+        <div id="status-getalltexts" class="status-item">getAllTexts</div>
+        <div id="status-getinnerhtml" class="status-item">getInnerHTML</div>
+        <div id="status-getattribute" class="status-item">getAttribute</div>
+        <div id="status-count" class="status-item">count</div>
+        <div id="status-download" class="status-item">download</div>
+        <div id="status-waitdownload" class="status-item">waitDownload</div>
+        <div id="status-getdownloads" class="status-item">getDownloads</div>
+        <div id="status-clickdownload" class="status-item">clickDownload</div>
+        <div id="status-canceldownload" class="status-item">cancelDownload</div>
+        <div id="status-erasedownload" class="status-item">eraseDownload</div>
+        <div id="status-removefile" class="status-item">removeFile</div>
+        <div id="status-screenshot" class="status-item">screenshot</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll Target (far down the page) -->
+  <div id="scroll-target" class="scroll-target">Scroll target - not scrolled</div>
+
+  <script>
+    const totalTests = 50;
+    let completedTests = 0;
+
+    function markDone(statusId) {
+      const el = document.getElementById(statusId);
+      if (el && !el.classList.contains('done')) {
+        el.classList.add('done');
+        completedTests++;
+        updateResult();
+      }
+    }
+
+    function updateResult() {
+      const result = document.getElementById('result');
+      if (completedTests === totalTests) {
+        result.className = 'result-success';
+        result.textContent = 'All tests completed successfully!';
+      } else if (completedTests > 0) {
+        result.className = 'result-partial';
+        result.textContent = `${completedTests}/${totalTests} tests completed...`;
+      }
+    }
+
+    // Click tests
+    document.getElementById('click-btn').addEventListener('click', function() {
+      this.textContent = 'clicked';
+      this.className = 'btn-green';
+      markDone('status-click');
+    });
+
+    document.getElementById('dblclick-btn').addEventListener('dblclick', function() {
+      this.textContent = 'double clicked';
+      this.className = 'btn-green';
+      markDone('status-dblclick');
+    });
+
+    document.getElementById('rightclick-btn').addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+      this.textContent = 'right clicked';
+      this.className = 'btn-green';
+      markDone('status-rightclick');
+    });
+
+    // Hover test
+    document.getElementById('hover-box').addEventListener('mouseenter', function() {
+      this.textContent = 'hovered';
+      this.classList.add('hovered');
+      markDone('status-hover');
+    });
+
+    // Drag and drop test
+    const draggable = document.getElementById('draggable');
+    const dropZone = document.getElementById('drop-zone');
+
+    draggable.addEventListener('dragstart', function(e) {
+      this.classList.add('dragging');
+      e.dataTransfer.setData('text/plain', 'dragged');
+    });
+
+    draggable.addEventListener('dragend', function() {
+      this.classList.remove('dragging');
+    });
+
+    dropZone.addEventListener('dragover', function(e) {
+      e.preventDefault();
+    });
+
+    dropZone.addEventListener('drop', function(e) {
+      e.preventDefault();
+      this.textContent = 'Dropped!';
+      this.classList.add('dropped');
+      draggable.style.display = 'none';
+      markDone('status-drag');
+    });
+
+    // Scroll test - uses Intersection Observer
+    const scrollTarget = document.getElementById('scroll-target');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          scrollTarget.textContent = 'Scroll target - scrolled into view';
+          scrollTarget.classList.add('scrolled');
+          markDone('status-scroll');
+          observer.disconnect();
+        }
+      });
+    }, { threshold: 0.1 });
+
+    observer.observe(scrollTarget);
+
+    // Keyboard press test
+    document.getElementById('press-input').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        document.getElementById('press-result').textContent = '✓ Enter pressed';
+        document.getElementById('press-result').classList.add('success');
+        markDone('status-press');
+      }
+    });
+
+    // Focus/Blur test
+    const focusInput = document.getElementById('focus-input');
+    const focusStatus = document.getElementById('focus-status');
+
+    focusInput.addEventListener('focus', function() {
+      focusStatus.textContent = 'focused';
+      focusStatus.classList.add('success');
+    });
+
+    focusInput.addEventListener('blur', function() {
+      if (focusStatus.textContent === 'focused') {
+        focusStatus.textContent = '✓ focus → blur';
+      }
+    });
+
+    // Button focus test
+    document.getElementById('focus-btn').addEventListener('focus', function() {
+      document.getElementById('focus-btn-status').textContent = '✓ button focused';
+      document.getElementById('focus-btn-status').classList.add('success');
+      markDone('status-focus-btn');
+    });
+
+    // Download button click handler
+    document.getElementById('download-btn').addEventListener('click', function() {
+      this.textContent = 'Downloading...';
+      this.style.background = '#22c55e';
+    });
+
+    // File upload test
+    document.getElementById('file-input').addEventListener('change', function() {
+      const file = this.files[0];
+      const fileName = file?.name || '';
+      const preview = document.getElementById('file-preview');
+
+      document.getElementById('file-name').textContent = fileName ? `✓ ${fileName}` : '';
+      preview.innerHTML = '';
+
+      if (file) {
+        if (file.type.startsWith('image/')) {
+          const img = document.createElement('img');
+          img.src = URL.createObjectURL(file);
+          preview.appendChild(img);
+        } else {
+          const confirm = document.createElement('span');
+          confirm.className = 'file-confirm';
+          confirm.textContent = `File uploaded: ${fileName}`;
+          preview.appendChild(confirm);
+        }
+        markDone('status-upload');
+      }
+    });
+  </script>
+</body>
+</html>

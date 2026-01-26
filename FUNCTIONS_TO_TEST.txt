@@ -1,0 +1,123 @@
+TABRIDER - FUNCTIONS TO TEST
+============================
+
+Legend: [✓] Tested  [ ] Pending  [-] N/A (helper/internal)
+Format: returnType:functionName(params)
+
+## INITIALIZATION
+[-] void:init()                                           → Initialize the engine (must call before using any methods)
+[-] boolean:isInitialized()                               → Check if engine has been initialized
+[-] string|null:getContext()                              → Get current context (background/content/popup/null)
+
+## PAGE MANAGEMENT
+[ ] Result<string>:createPage(url?)                       → Create a new browser tab, optionally navigate to URL
+[ ] void:closePage(pageId)                                → Close a specific tab by page ID
+[ ] void:switchToPage(pageId)                             → Switch focus to a specific tab
+[ ] Record<string,Page>:getPages()                        → Get all managed pages as a Record<string, Page>
+[ ] Page|null:getActivePage()                             → Get the currently active page or null
+[ ] void:closeAllPages()                                  → Close all managed tabs
+[ ] void:closeAllPagesWithCleanup()                       → Close all tabs after removing highlights
+
+## PAGE NAVIGATION
+[ ] void:goto(pageId, url)                                → Navigate a page to a new URL
+[ ] void:reload(pageId)                                   → Reload/refresh the page
+[ ] void:goBack(pageId)                                   → Navigate back in browser history
+[ ] void:goForward(pageId)                                → Navigate forward in browser history
+[✓] string:getUrl(pageId)                                 → Get current page URL
+[✓] string:getTitle(pageId)                               → Get page title
+[ ] boolean:waitForURL(pageId, pattern, timeout?)         → Wait for URL to match string or RegExp pattern
+
+## CLICKING
+[✓] void:click(pageId, selector)                          → Click an element (supports CSS & XPath selectors)
+[✓] void:doubleClick(pageId, selector)                    → Double-click an element
+[✓] void:rightClick(pageId, selector)                     → Right-click an element (opens context menu)
+
+## FORM INPUT
+[✓] void:fill(pageId, selector, value)                    → Fill an input field with a value (sets value directly)
+[✓] void:type(pageId, selector, text, delay?)             → Type text character-by-character (human-like, default 50ms delay)
+[✓] void:clear(pageId, selector)                          → Clear an input field
+[✓] string:getValue(pageId, selector)                     → Get current value of input/textarea/select
+[✓] void:selectOption(pageId, selector, value)            → Select an option from a dropdown by value or text
+[✓] void:check(pageId, selector)                          → Check a checkbox or radio button
+[✓] void:uncheck(pageId, selector)                        → Uncheck a checkbox
+[✓] void:uploadFile(pageId, selector, filePath)           → Upload a file to a file input element
+
+## KEYBOARD & FOCUS
+[✓] void:press(pageId, selector, key)                     → Press a keyboard key (Enter, Tab, Escape, ArrowDown, etc.)
+[✓] void:focus(pageId, selector)                          → Focus an element
+[✓] void:blur(pageId, selector)                           → Remove focus from an element
+
+## MOUSE ACTIONS
+[✓] void:hover(pageId, selector)                          → Hover over an element (triggers mouseenter/mouseover)
+[✓] void:dragAndDrop(pageId, source, target)              → Drag element from source to target selector
+[✓] void:scrollIntoView(pageId, selector)                 → Scroll element into viewport (smooth, centered)
+
+## ELEMENT STATE
+[✓] boolean:exists(pageId, selector)                      → Check if element exists in DOM (no waiting, returns boolean)
+[✓] boolean:isVisible(pageId, selector)                   → Check if element is visible (returns boolean)
+[✓] boolean:isEnabled(pageId, selector)                   → Check if element is enabled (not disabled)
+[✓] boolean:isChecked(pageId, selector)                   → Check if checkbox/radio is checked
+[✓] boolean:waitFor(pageId, selector, timeout?)           → Wait for an element to appear and be visible
+
+## ELEMENT DATA
+[✓] string:getText(pageId, selector)                      → Get text content of a single element
+[✓] string[]:getAllTexts(pageId, selector)                → Get text content from multiple matching elements
+[✓] string:getInnerHTML(pageId, selector)                 → Get inner HTML content of an element
+[✓] string|null:getAttribute(pageId, selector, attr)      → Get an attribute value (href, src, data-*, etc.)
+[✓] number:count(pageId, selector)                        → Count number of elements matching selector
+
+## SCREENSHOT
+[✓] Result<string>:screenshot(pageId, format?, quality?)  → Capture screenshot of visible tab (returns base64 data URL)
+
+## DOWNLOAD MANAGEMENT
+[✓] Result<number>:download(url, savePath?)               → Download file from URL, optionally to specific path
+[✓] Result<DownloadItem>:waitForDownload(downloadId?, timeout?) → Wait for download to complete
+[✓] Result<DownloadItem[]>:getDownloads(limit?)           → Get recent downloads
+[✓] Result<void>:cancelDownload(downloadId)               → Cancel a download
+[✓] Result<void>:eraseDownload(downloadId)                → Erase download from history (not the file)
+[✓] Result<void>:removeFile(downloadId)                   → Delete downloaded file from disk
+[✓] Result<DownloadItem>:clickAndDownload(pageId, selector, timeout?) → Click element and wait for download
+
+## HIGH-LEVEL AUTOMATION
+[ ] void:fillForm(pageId, formData)                       → Fill multiple form fields at once with {selector: value} pairs
+[ ] void:clickAndWait(pageId, clickSel, waitSel, timeout?) → Click an element then wait for another element to appear
+[ ] Record<string,string>:scrapeData(pageId, selectors)   → Extract data using multiple selectors, returns {key: text}
+[✓] T:evaluate(pageId, fn, ...args)                       → Execute arbitrary JavaScript in the page context
+
+## TIMING
+[ ] void:wait(ms)                                         → Wait for specified milliseconds
+[ ] void:waitMs(ms)                                       → Wait for specified milliseconds (alias)
+[ ] void:waitSeconds(seconds)                             → Wait for specified seconds
+[ ] void:randomWait(min?, max?)                           → Wait random time between min-max seconds (human-like delay)
+
+## STATE & SETTINGS
+[ ] State:getState()                                      → Get snapshot of entire engine state
+[ ] ()=>void:onStateChange(callback)                      → Subscribe to state changes, returns unsubscribe function
+[ ] LogEntry[]:getLogs()                                  → Get all log entries
+[ ] void:clearLogs()                                      → Clear all stored logs
+[ ] EngineSettings:getSettings()                          → Get current engine settings (timeout, retries, logging)
+[ ] void:updateSettings(updates)                          → Update engine settings with partial object
+
+## AUTOMATION SESSION
+[ ] void:startAutomationSession()                         → Start session, highlights all tabs with "AUTO" badge
+[ ] void:endAutomationSession()                           → End session, removes highlights from all tabs
+[ ] boolean:isAbortRequested()                            → Check if abort requested (always false, close browser to stop)
+
+## RESULT TYPE HELPERS
+[-] Result<T>:Ok(data)                                    → Create a successful Result containing data
+[-] Result<T>:Err(error)                                  → Create an error Result containing error message
+[-] T:Result.unwrap()                                     → Get data or throw if error
+[-] T:Result.unwrap_or(default)                           → Get data or return default if error
+[-] boolean:Result.is_ok()                                → Check if Result is successful (boolean)
+[-] boolean:Result.is_err()                               → Check if Result is an error (boolean)
+
+## UTILITY FUNCTIONS (from AutomationUtils)
+[-] Engine:getEngine(params?)                             → Get engine instance from params or return singleton
+[-] Engine|null:getEngineSync(params?)                    → Synchronously get engine from params or null
+[-] boolean:clickAndCheckNavigation(engine, pageId, selectors, waitTimeMs?, logPrefix?) → Try multiple selectors until one causes navigation
+[-] T:withRetry(fn, retries?, delay?)                     → Retry a function with exponential backoff
+[-] boolean:waitForCondition(condition, timeout?, interval?) → Wait until a condition function returns true
+
+---
+PROGRESS: 38/48 functions tested (79%)
+---

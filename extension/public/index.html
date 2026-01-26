@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Automation Dashboard</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      width: 380px;
+      min-height: 300px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #fafafa;
+      color: #333;
+      line-height: 1.4;
+    }
+
+    .container {
+      background: white;
+      padding: 16px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e5e5e5;
+    }
+
+    .header h1 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #2563eb;
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      color: #6b7280;
+      font-size: 12px;
+      font-weight: 400;
+    }
+
+    .stats-row {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 8px 0;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 8px;
+      background: #f3f4f6;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 500;
+      color: #6b7280;
+    }
+
+    .stat-item.selected {
+      background: #dbeafe;
+      color: #2563eb;
+    }
+
+    .controls {
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .automation-list {
+      max-height: 250px;
+      overflow-y: auto;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      background: #f9fafb;
+    }
+
+    .automation-item {
+      display: flex;
+      align-items: center;
+      padding: 10px 12px;
+      border-bottom: 1px solid #e5e7eb;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .automation-item:last-child {
+      border-bottom: none;
+    }
+
+    .automation-item:hover {
+      background: #f3f4f6;
+    }
+
+    .automation-item.selected {
+      background: #eff6ff;
+    }
+
+    .automation-item.running {
+      background: #fef3c7;
+    }
+
+    .automation-checkbox {
+      width: 18px;
+      height: 18px;
+      margin-right: 10px;
+      accent-color: #2563eb;
+      cursor: pointer;
+    }
+
+    .automation-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .automation-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: #374151;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .automation-desc {
+      font-size: 11px;
+      color: #6b7280;
+      margin-top: 2px;
+    }
+
+    .automation-status {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-weight: 500;
+      margin-left: 8px;
+    }
+
+    .automation-status.running {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .run-button {
+      width: 100%;
+      padding: 12px 16px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .run-button:hover {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+    }
+
+    .run-button:active {
+      transform: translateY(0);
+    }
+
+    .run-button:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #6b7280;
+      font-size: 12px;
+      font-weight: 400;
+    }
+
+    .loading::before {
+      content: '';
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #e5e7eb;
+      border-top: 2px solid #2563eb;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 8px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .error {
+      background: #fef2f2;
+      color: #dc2626;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      border-left: 3px solid #dc2626;
+      font-size: 12px;
+      font-weight: 400;
+    }
+
+    .status-bar {
+      background: #f9fafb;
+      border-top: 1px solid #e5e7eb;
+      color: #6b7280;
+      padding: 8px 16px;
+      font-size: 11px;
+      font-weight: 400;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10b981;
+    }
+
+    .status-dot.running {
+      background: #f59e0b;
+      animation: pulse 1.5s infinite;
+    }
+
+    .status-dot.error {
+      background: #ef4444;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .running-functions {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin: 12px 0;
+      font-size: 12px;
+      color: #92400e;
+      font-weight: 400;
+    }
+
+    .select-all-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .select-all-row a {
+      color: #2563eb;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .select-all-row a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Web Automation</h1>
+      <p class="subtitle">Select automations to run</p>
+
+      <div class="stats-row">
+        <div class="stat-item">
+          <span id="functionCount">0 functions</span>
+        </div>
+        <div class="stat-item selected">
+          <span id="selectedCount">0 selected</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="select-all-row">
+        <span>Available automations:</span>
+        <div>
+          <a id="selectAllBtn">Select All</a> | <a id="deselectAllBtn">Deselect All</a>
+        </div>
+      </div>
+
+      <div id="automationList" class="automation-list">
+        <!-- Checkboxes will be populated dynamically -->
+      </div>
+
+      <button id="runButton" class="run-button" disabled>
+        Start Selected Automations
+      </button>
+    </div>
+
+    <div id="loadingIndicator" class="loading">
+      Loading functions...
+    </div>
+
+    <div id="runningFunctions" class="running-functions" style="display: none;">
+      Currently running automations
+    </div>
+
+    <div id="errorContainer"></div>
+  </div>
+
+  <div class="status-bar">
+    <div class="status-indicator">
+      <div class="status-dot" id="statusDot"></div>
+      <span>Web Automation</span>
+    </div>
+    <span id="statusText">Ready</span>
+  </div>
+
+  <script type="module" src="index.js"></script>
+</body>
+</html>
