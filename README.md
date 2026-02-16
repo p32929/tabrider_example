@@ -8,38 +8,9 @@ A complete Chrome extension example demonstrating how to use [tabrider](https://
 - npm
 - Chrome browser
 
-## Setup
+## Getting Started
 
-1. Install dependencies:
-
-```bash
-npm install
-```
-
-2. Update `package.json` to use the latest version of tabrider:
-
-```diff
-  "dependencies": {
--   "tabrider": "file:.."
-+   "tabrider": "^1.0.0"
-  }
-```
-
-> The local `file:..` reference is used during development. Replace it with the latest published version from npm.
-
-3. Build the extension:
-
-```bash
-npm run build
-```
-
-4. Load in Chrome:
-   - Go to `chrome://extensions/`
-   - Enable **Developer mode** (top right)
-   - Click **Load unpacked**
-   - Select the `dist` folder
-
-## Running
+> Before running, update `package.json` to use the latest published version of tabrider: change `"tabrider": "file:.."` to `"tabrider": "^1.0.0"`.
 
 ### Development
 
@@ -47,9 +18,9 @@ npm run build
 ./run_dev.sh
 ```
 
-Starts both the server (with hot reload) and the extension build (watch mode) in parallel. The extension auto-reloads in Chrome whenever you save a file — no manual reload needed. This works via a WebSocket connection between the Vite build and the extension's background script.
+Installs all dependencies, starts the server (with hot reload), and builds the extension in watch mode. The extension auto-reloads in Chrome whenever you save a file — no manual reload needed.
 
-> On first run, you still need to load the extension once: `chrome://extensions` → **Load unpacked** → select the `dist` folder.
+On first run, load the extension once in Chrome: `chrome://extensions` → enable **Developer mode** → **Load unpacked** → select the `dist` folder. After that, it auto-reloads on every change.
 
 ### Production
 
@@ -57,15 +28,7 @@ Starts both the server (with hot reload) and the extension build (watch mode) in
 ./run_prod.sh
 ```
 
-Builds the extension once and starts the server normally.
-
-### Individual Scripts
-
-| Script | Description |
-|---|---|
-| `npm run dev` | Extension watch mode — rebuilds on file changes |
-| `npm run build` | Extension full build with type checking |
-| `npm run build:fast` | Extension fast build without type checking |
+Installs all dependencies, builds the extension once, and starts the server.
 
 ## Project Structure
 
@@ -133,19 +96,9 @@ export async function my_automation() {
 
 ## Example Server
 
-An example Express server is included in `server/`. It demonstrates how to pair tabrider with a backend for heavy lifting that extensions can't do alone.
+An example Express server is included in `server/` and starts automatically with the bash scripts. It runs on `http://localhost:3000` and demonstrates how to pair tabrider with a backend for heavy lifting that extensions can't do alone.
 
-### Server Setup
-
-```bash
-cd server
-npm install
-npm run dev
-```
-
-The server runs on `http://localhost:3000` with hot reload.
-
-### Available Endpoints
+### Endpoints
 
 | Method | Route | Purpose |
 |---|---|---|
@@ -153,14 +106,6 @@ The server runs on `http://localhost:3000` with hot reload.
 | `POST` | `/files` | Save content to a file on disk |
 | `GET` | `/files/:filename` | Read a file's content |
 | `PUT` | `/files/:filename` | Update a file's content |
-| `POST` | `/fetch` | Proxy external API calls (avoids CORS) |
-| `POST` | `/extract` | Send HTML + regex patterns, get structured data back |
-| `POST` | `/transform` | Data conversion (JSON to CSV, flatten nested objects) |
-| `POST` | `/store` | Save a key-value pair (in-memory) |
-| `GET` | `/store/:key` | Retrieve a stored value |
-| `DELETE` | `/store/:key` | Delete a stored value |
-| `POST` | `/logs` | Receive logs from the extension |
-| `GET` | `/logs` | View all collected logs |
 
 ### Why Use a Server?
 
