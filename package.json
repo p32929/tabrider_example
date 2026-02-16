@@ -17,6 +17,6 @@
     "ws": "^8.19.0"
   },
   "dependencies": {
-    "tabrider": "file:.."
+    "tabrider": "latest"
   }
 }
