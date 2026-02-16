@@ -11,8 +11,10 @@
   },
   "devDependencies": {
     "@types/chrome": "^0.0.251",
+    "@types/ws": "^8.18.1",
     "typescript": "^5.3.3",
-    "vite": "^5.0.0"
+    "vite": "^5.0.0",
+    "ws": "^8.19.0"
   },
   "dependencies": {
     "tabrider": "file:.."

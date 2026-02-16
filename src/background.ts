@@ -272,3 +272,36 @@ class BackgroundService {
 
 // Initialize background service
 new BackgroundService();
+
+// Dev auto-reload: connects to the WebSocket server started by the vite plugin.
+// When vite finishes a build, it sends "reload" and the extension reloads instantly.
+// Reconnects automatically if the connection drops (e.g. service worker restart).
+(function devAutoReload() {
+  function connect() {
+    try {
+      const ws = new WebSocket('ws://localhost:8789');
+      ws.onmessage = (event) => {
+        if (event.data === 'reload') {
+          console.log('[dev] Build complete, reloading extension...');
+          chrome.runtime.reload();
+        }
+      };
+      ws.onopen = () => console.log('[dev] Auto-reload connected');
+      ws.onclose = () => {
+        console.log('[dev] Auto-reload disconnected, reconnecting in 2s...');
+        setTimeout(connect, 2000);
+      };
+      ws.onerror = () => ws.close();
+    } catch {
+      setTimeout(connect, 2000);
+    }
+  }
+
+  connect();
+
+  // Keep service worker alive so the WebSocket connection persists
+  chrome.alarms.create('dev-keepalive', { periodInMinutes: 0.4 });
+  chrome.alarms.onAlarm.addListener((alarm) => {
+    if (alarm.name === 'dev-keepalive') { /* just waking up */ }
+  });
+})();

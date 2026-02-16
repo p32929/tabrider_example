@@ -1,8 +1,10 @@
 import * as tests from '../automations/tests.js';
+import * as server_demo from '../automations/server_demo.js';
 
 // Create a map of all automation modules
 const automationModules = {
-  tests
+  tests,
+  server_demo
 } as const;
 
 // Extract all function names as string literal types dynamically
