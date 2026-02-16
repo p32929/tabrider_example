@@ -13,20 +13,19 @@ A complete Chrome extension example demonstrating how to use [tabrider](https://
 1. Install dependencies:
 
 ```bash
-cd extension
 npm install
 ```
 
-2. Update `extension/package.json` to use the latest version of tabrider:
+2. Update `package.json` to use the latest version of tabrider:
 
 ```diff
   "dependencies": {
--   "tabrider": "file:../.."
+-   "tabrider": "file:.."
 +   "tabrider": "^1.0.0"
   }
 ```
 
-> The local `file:../..` reference is used during development. Replace it with the latest published version from npm.
+> The local `file:..` reference is used during development. Replace it with the latest published version from npm.
 
 3. Build the extension:
 
@@ -38,7 +37,7 @@ npm run build
    - Go to `chrome://extensions/`
    - Enable **Developer mode** (top right)
    - Click **Load unpacked**
-   - Select the `extension/dist` folder
+   - Select the `dist` folder
 
 ## Scripts
 
@@ -51,24 +50,23 @@ npm run build
 ## Project Structure
 
 ```
-├── extension/
-│   ├── public/
-│   │   ├── index.html          # Popup UI
-│   │   └── manifest.json       # Chrome extension manifest (MV3)
-│   ├── src/
-│   │   ├── background.ts       # Service worker — initializes Engine, runs automations
-│   │   ├── index.ts            # Popup script — UI for selecting and running automations
-│   │   ├── automations/
-│   │   │   └── tests.ts        # Example automation functions
-│   │   └── types/
-│   │       └── automations.ts  # Type-safe automation registry
-│   ├── package.json
-│   ├── tsconfig.json
-│   └── vite.config.ts
+├── src/
+│   ├── background.ts           # Service worker — initializes Engine, runs automations
+│   ├── index.ts                # Popup script — UI for selecting and running automations
+│   ├── automations/
+│   │   └── tests.ts            # Example automation functions
+│   └── types/
+│       └── automations.ts      # Type-safe automation registry
+├── public/
+│   ├── index.html              # Popup UI
+│   └── manifest.json           # Chrome extension manifest (MV3)
 ├── test-page/
 │   └── AllInOneTests.html      # Test page used by the automations
-└── assets/
-    └── test-image.jpg          # Used for file upload tests
+├── assets/
+│   └── test-image.jpg          # Used for file upload tests
+├── package.json
+├── tsconfig.json
+└── vite.config.ts
 ```
 
 ## How It Works
