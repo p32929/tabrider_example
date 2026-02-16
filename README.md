@@ -2,6 +2,9 @@
 
 A complete Chrome extension example demonstrating how to use [tabrider](https://www.npmjs.com/package/tabrider) — a Playwright-style automation engine for Chrome extensions.
 
+## Demo ( Extension + Server )
+https://github.com/user-attachments/assets/c31e3cd5-1eca-4c5b-a805-6f3e2e8bdb8f
+
 ## Prerequisites
 
 - Node.js >= 18
