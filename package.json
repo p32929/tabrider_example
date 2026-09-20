@@ -18,5 +18,9 @@
   },
   "dependencies": {
     "tabrider": "latest"
+  },
+  "funding": {
+    "type": "buymeacoffee",
+    "url": "https://www.buymeacoffee.com/p32929"
   }
 }
