@@ -1,19 +1,21 @@
 # Tabrider Example Extension
 
-A complete Chrome extension example demonstrating how to use [tabrider](https://www.npmjs.com/package/tabrider) — a Playwright-style automation engine for Chrome extensions.
+A complete Chrome extension that shows how to use [tabrider](https://www.npmjs.com/package/tabrider), a Playwright-style automation library for Chrome extensions.
 
-## Demo ( Extension + Server )
+Most browser automation needs a separate Node server, a driver and a second browser. With tabrider the automation runs inside a normal extension, in the browser you already use: click, fill, wait, scrape, download and upload, all from your extension's code. This repo is a ready-to-run starting point you can copy.
+
+## Demo (extension and server)
 https://github.com/user-attachments/assets/c31e3cd5-1eca-4c5b-a805-6f3e2e8bdb8f
 
 ## Prerequisites
 
-- Node.js >= 18
-- npm
-- Chrome browser
+1. Node.js >= 18
+2. npm
+3. Chrome browser
 
 ## Getting Started
 
-> Before running, update `package.json` to use the latest published version of tabrider: change `"tabrider": "file:.."` to `"tabrider": "^1.0.0"`.
+> The `tests.all_in_one` demo opens a test page using a full path from my computer (`TEST_PAGE_PATH` in `src/automations/tests.ts`). Change it to the path of `test-page/AllInOneTests.html` on your computer before you run it.
 
 ### Development
 
@@ -21,9 +23,9 @@ https://github.com/user-attachments/assets/c31e3cd5-1eca-4c5b-a805-6f3e2e8bdb8f
 ./run_dev.sh
 ```
 
-Installs all dependencies, starts the server (with hot reload), and builds the extension in watch mode. The extension auto-reloads in Chrome whenever you save a file — no manual reload needed.
+This installs everything, starts the server with hot reload, and builds the extension in watch mode. The extension reloads in Chrome by itself whenever you save a file.
 
-On first run, load the extension once in Chrome: `chrome://extensions` → enable **Developer mode** → **Load unpacked** → select the `dist` folder. After that, it auto-reloads on every change.
+The first time, load the extension in Chrome once: open `chrome://extensions`, turn on **Developer mode**, click **Load unpacked** and pick the `dist` folder. After that it reloads on every change.
 
 ### Production
 
@@ -31,7 +33,7 @@ On first run, load the extension once in Chrome: `chrome://extensions` → enabl
 ./run_prod.sh
 ```
 
-Installs all dependencies, builds the extension once, and starts the server.
+This installs everything, builds the extension once, and starts the server.
 
 ## Project Structure
 
@@ -70,8 +72,8 @@ Installs all dependencies, builds the extension once, and starts the server.
 
 The extension follows the standard Chrome MV3 pattern:
 
-- **Background service worker** (`background.ts`) — Initializes the tabrider Engine, listens for messages from the popup, and executes automation functions.
-- **Popup** (`index.ts`) — UI for browsing, selecting, and launching automations. Communicates with the background via `chrome.runtime.sendMessage()`.
+1. **Background service worker** (`background.ts`): Initializes the tabrider Engine, listens for messages from the popup, and executes automation functions.
+2. **Popup** (`index.ts`): UI for browsing, selecting, and launching automations. Communicates with the background via `chrome.runtime.sendMessage()`.
 
 ### Adding Your Own Automations
 
@@ -114,15 +116,15 @@ An example Express server is included in `server/` and starts automatically with
 
 Chrome extensions are sandboxed. They can interact with web pages, but they **cannot** access the file system, run heavy computations, or freely call external APIs. A companion server removes all of those limitations.
 
-**File system access** — Extensions have no way to read or write files on disk. With a server, your automation can save scraped data to files, read config files, generate reports, export CSVs — anything that touches the file system. The included `server_demo.file_demo` automation shows this in action: it generates a random number, saves it to a file on the server, reads it back, updates it, and displays every step on screen.
+**File system access:** Extensions have no way to read or write files on disk. With a server, your automation can save scraped data to files, read config files, generate reports, export CSVs — anything that touches the file system. The included `server_demo.file_demo` automation shows this in action: it generates a random number, saves it to a file on the server, reads it back, updates it, and displays every step on screen.
 
-**Heavy lifting** — Parsing large HTML documents, processing images, running AI models, transforming data between formats — all of this is expensive and sometimes impossible inside a service worker (which Chrome can terminate at any time). Offload it to the server where there are no memory limits or execution timeouts.
+**Heavy work:** Parsing large HTML documents, processing images, running AI models, transforming data between formats — all of this is expensive and sometimes impossible inside a service worker (which Chrome can terminate at any time). Offload it to the server where there are no memory limits or execution timeouts.
 
-**External API calls** — Many APIs block requests from browser extensions due to CORS. A server acts as a proxy — the extension sends the request to your server, the server hits the external API, and returns the result. No CORS issues, no blocked requests.
+**Outside APIs:** Many APIs block requests from browser extensions due to CORS. A server acts as a proxy — the extension sends the request to your server, the server hits the external API, and returns the result. No CORS issues, no blocked requests.
 
-**Persistent storage** — `chrome.storage` is limited and slow for large datasets. A server can use a real database (SQLite, PostgreSQL, MongoDB) or even simple JSON files on disk for reliable, queryable storage.
+**Storage:** `chrome.storage` is limited and slow for large datasets. A server can use a real database (SQLite, PostgreSQL, MongoDB) or even simple JSON files on disk for reliable, queryable storage.
 
-**Long-running tasks** — Chrome MV3 service workers get terminated after ~30 seconds of inactivity. Any task that takes longer than that needs to live on the server. Queue jobs, run them in the background, and let the extension check back for results.
+**Long tasks:** Chrome MV3 service workers get terminated after ~30 seconds of inactivity. Any task that takes longer than that needs to live on the server. Queue jobs, run them in the background, and let the extension check back for results.
 
 The pattern is simple: **the extension handles the browser, the server handles everything else.** You can write the server in any language — Node.js, Python, Go, Rust — whatever fits your use case. Together, they can automate complex workflows end-to-end.
 
@@ -130,68 +132,21 @@ The pattern is simple: **the extension handles the browser, the server handles e
 
 The extension requests these Chrome permissions (see `manifest.json`):
 
-- `activeTab` — Access the current tab
-- `tabs` — Create and manage tabs
-- `scripting` — Inject scripts into pages
-- `storage` — Persist automation state
-- `downloads` — Manage file downloads
-- `<all_urls>` — Interact with any page
+1. `activeTab`: Access the current tab
+2. `tabs`: Create and manage tabs
+3. `scripting`: Inject scripts into pages
+4. `storage`: Persist automation state
+5. `downloads`: Manage file downloads
+6. `<all_urls>`: Interact with any page
 
 ## Contributing
 
-Contributions are warmly welcomed and greatly appreciated! Whether it's a bug fix, new feature, or improvement, your input helps make this project better for everyone.
-
-Before submitting a pull request, please:
-
-1. Create an issue describing the feature or bug fix you'd like to work on
-2. Wait for discussion and approval to ensure alignment with project goals
-3. Fork the repository and create your feature branch
-4. Submit your pull request with a clear description of changes
-
-This approach helps avoid duplicate efforts and ensures smooth collaboration. Thank you for considering contributing!
+Contributions are very welcome, thank you! Before you start on a pull request, please open an issue and tell me what you would like to add or change. That way we can agree on it first, and your time is not wasted on something that might not fit. Thanks for helping make tabrider example better.
 
 ## Share
 
-Sharing this repository with your friends is just one click away from here
-
-[![facebook](https://user-images.githubusercontent.com/6418354/179013321-ac1d1452-0689-493f-9066-940cf2302b6e.png)](https://www.facebook.com/sharer/sharer.php?u=https://github.com/p32929/tabrider_example/)
-[![twitter](https://user-images.githubusercontent.com/6418354/179013351-7d8d6d1c-4ce2-46ab-bef8-4c4765a1b888.png)](https://twitter.com/intent/tweet?url=https://github.com/p32929/tabrider_example/)
-[![tumblr](https://user-images.githubusercontent.com/6418354/179013343-3111f55a-3b90-40c7-8487-9777348672b0.png)](https://www.tumblr.com/share?v=3&u=https://github.com/p32929/tabrider_example/)
-[![pocket](https://user-images.githubusercontent.com/6418354/179013334-b095c45f-becf-49f4-9ee1-5a731a9b1f85.png)](https://getpocket.com/save?url=https://github.com/p32929/tabrider_example/)
-[![pinterest](https://user-images.githubusercontent.com/6418354/179013331-44cd9206-11b1-4b65-becb-5863b61c828f.png)](https://pinterest.com/pin/create/button/?url=https://github.com/p32929/tabrider_example/)
-[![reddit](https://user-images.githubusercontent.com/6418354/179013338-7416ae3f-73ba-4522-86e1-1374d7082d22.png)](https://www.reddit.com/submit?url=https://github.com/p32929/tabrider_example/)
-[![linkedin](https://user-images.githubusercontent.com/6418354/179013327-ca7b7102-1da8-4b1c-858f-1a6e5f21bd70.png)](https://www.linkedin.com/shareArticle?mini=true&url=https://github.com/p32929/tabrider_example/)
-[![whatsapp](https://user-images.githubusercontent.com/6418354/179013353-f477fa0b-3e6f-4138-a357-c9991b23ff88.png)](https://api.whatsapp.com/send?text=https://github.com/p32929/tabrider_example/)
-
----
+<a href="https://p32929.github.io/share/?repo=tabrider_example"><img src="https://p32929.github.io/readme/share.svg" alt="Share this with your friends in just a click" width="420"></a>
 
 ## Support
 
-If this saved you time, you can buy me a coffee — it keeps these projects maintained and free.
-
-[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-%E2%98%95-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black)](https://www.buymeacoffee.com/p32929)
-
-<!-- hire-block -->
-
----
-
-## 💼 Using this at a company?
-
-I do fixed-price delivery work on my own projects. One invoice, one date, no hourly billing:
-
-| | |
-|---|---|
-| **White-label build** — this project rebranded, extended and deployed as yours | **$6,500** · 3 weeks |
-| **Custom app from scratch** on my own stack, signed and auto-updating | **$12,500** · 6 weeks |
-| **Production-hardening sprint** — 72 hours on this project, for your load and your security review | **$999** |
-| **Ongoing capacity** — one project-week of my time reserved every month | **$9,000 / month** |
-
-Full details → **[p32929.github.io/hire](https://p32929.github.io/hire/)** · Email **[fayazdevinbox@uberip.com](mailto:fayazdevinbox@uberip.com)** — scoping and quotes are free and I answer within one business day.
-
-### Commercial use of this repo
-
-This repo has **no license file**, which in copyright law means *all rights reserved*.
-Personal use, learning and open-source forks: go ahead, just link back. Shipping it inside a
-commercial or closed-source product needs a license — **$2,500** for one product, **$9,500**
-company-wide and perpetual, signed and issued the same day
-([details](https://p32929.github.io/hire/)).
+<a href="https://p32929.github.io/support/"><img src="https://p32929.github.io/readme/support.svg" alt="If you like my works and want to support me, feel free to support" width="420"></a>
